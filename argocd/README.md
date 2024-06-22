@@ -5,3 +5,4 @@ argo-cd 개발환경, 디버깅과 관련된 내용을 다루고 있습니다.
 
 ## 목차
 1. [쿠버네티스 클러스터 구성하기](./01-k8s-cluster.md)
+2. [ArgoCD 배포하기](./02-argocd-deploy.md)
