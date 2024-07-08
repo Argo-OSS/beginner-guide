@@ -111,7 +111,7 @@ make start-local ARGOCD_GPG_ENABLED=false
 ```
 
 아래와 같이 별다른 에러 출력(빨간색 라인)이 없다면 잘 설치된 것입니다.
-![cmd-results](./images/02-getting-start/cmd-results.png)
+![cmd-results](./images/01-getting-start/cmd-results.png)
 
 대시보드로 들어가기 위해서는 localhost:4000 으로 접속합니다.
 

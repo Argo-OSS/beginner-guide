@@ -13,7 +13,7 @@
 각 환경에 따라 설치를 진행합니다.
 
 ## 클러스터 생성
-![argocd-nodeport](./images/01-k8s-cluster/kind-argocd-nodeport.jpg)
+![argocd-nodeport](./images/02-k8s-cluster/kind-argocd-nodeport.jpg)
 
 argocd의 helm chart로 배포하는 경우 service type을 NodePort로 지정하면 Default로 `30080`, `30443` 포트를 사용합니다.
 
@@ -38,7 +38,7 @@ kind create cluster --config <config.yaml>
 ```
 위 명령어를 통해 클러스터를 생성합니다. 아래와 같이 진행되는지 확인합니다.
 
-![kind-create](./images/01-k8s-cluster/kind-cluster-create.jpg)
+![kind-create](./images/02-k8s-cluster/kind-cluster-create.jpg)
 
 ```sh
 kind get clusters
@@ -48,4 +48,4 @@ kubectl get pod -A
 위 명령어를 통해 클러스터가 정상적으로 생성됐는지 확인합니다.
 아래와 같은 결과가 나오는지 확인합니다.
 
-![kind-success](./images/01-k8s-cluster/kind-cluster-create.jpg)
+![kind-success](./images/02-k8s-cluster/kind-cluster-create.jpg)
