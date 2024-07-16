@@ -96,7 +96,7 @@ origin 에 push 가 되면 자동으로 연결된 PR 이 업데이트됩니다.
         * 모든 내용을 수정 후 모든 변경 사항을 add 합니다.
             * `git add .`
     * 이제 충돌이 해결되었으니 rebase 를 속행합니다.
-        * `git rebase —continue`
+        * `git rebase --continue`
     * 터미널에서 commit 로그가 적힌 파일이 vim 등 편집기로 열립니다.
         * rebase 시 대상 commit 이력을 수정할 수 있습니다.
         * 현재 PR 중인 commit 이므로 취향껏 수정
