@@ -115,3 +115,14 @@ config의 key/value 확인
 gpg: signing failed: Inappropriate ioctl for device
 ```
 위와 같은 Error 메시지가 발생한다면 `.basrc` 같은 shell 설정에 `export GPG_TTY=$(tty)` 추가.
+```
+gpg failed to sign the data failed to write commit object
+```
+위와 같은 Error 메시지가 발생하면 `ssh-add`를 실행해본다.
+
+
+위에서 설명한 것과 다른 에러가  발생한다면 `GIT_TRACE=1 (git 명령어)`로 에러를 디버깅해본다.
+
+아래 링크를 보면서 해당되는 에러를 해결해본다.
+
+[참고](https://gist.github.com/paolocarrasco/18ca8fe6e63490ae1be23e84a7039374?permalink_comment_id=3825285)
