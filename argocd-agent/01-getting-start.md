@@ -63,14 +63,12 @@ Control Plane Cluster           Workload Cluster(s)
 ## ⚠️ 안내
 
 - **<25.09.08>** Agent 코드는 CA 시크릿의 모든 필드를 인증서로 읽으려고 하는데, `argocd-agentctl pki issue agent` 명령어로 생성하는 CA 인증서에서 자동으로 복사가 되지 않는 문제가 발생하고 있습니다. [Agent 생성 및 연결](#agent-생성-및-연결) 의 Agent 클라이언트 인증서 발급 목차를 참고하세요.
-- **<25.09.08>** 시작 전 아래 파일의 namespace를 "argocd"로 변경해주세요. 기본 namespace가 default로 되어있어서, role binding에 대한 권한 문제가 발생합니다. **(CrashLoopBackOff)** <br />
+- **<25.09.08>** 시작 전 아래 파일의 namespace를 "argocd"로 변경해주세요. 기본 namespace가 default로 되어있어서, role binding에 대한 **`(CrashLoopBackOff)`** 문제가 발생합니다. <br />
 `argocd-agent/install/kubernetes/agent/agent-clusterrolebinding.yaml` <br />
 `argocd-agent/install/kubernetes/agent/agent-rolebinding.yaml` <br />
 `argocd-agent/install/kubernetes/principal/principal-clusterrolebinding.yaml` <br />
 `argocd-agent/install/kubernetes/principal/principal-rolebinding.yaml`
 [#403 참고](https://github.com/argoproj-labs/argocd-agent/issues/403)
-
-아래 명령어로 CA 시크릿을 ConfigMap 스타일(인증서만 포함)로 생성합니다.
 
 <br />
 
