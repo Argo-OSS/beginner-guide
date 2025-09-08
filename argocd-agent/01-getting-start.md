@@ -440,9 +440,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret --context kind-argocd-h
 - 브라우저에서 SSL 인증서 경고가 나타나면 "고급" → "안전하지 않음으로 이동"을 클릭합니다.
 - UI에서 Agent 클러스터(`agent-a`)가 연결된 것을 확인할 수 있습니다.
 
-![alt text](images/image-1.png)
+![alt text](./images/image-1.png)
 
-![alt text](images/image.png)
+![alt text](./images/image.png)
 
 <br />
 
