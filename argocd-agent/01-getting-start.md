@@ -288,13 +288,19 @@ kubectl apply -n argocd \
 
 ### Agent 구성 생성
 Principal에서 Agent 구성을 생성합니다. <br />
-`<principal-external-ip>`에 실제 값을 입력해주세요.
 
 ```bash
+#./dist/argocd-agentctl agent create agent-a \
+#  --principal-context kind-argocd-hub \
+#  --principal-namespace argocd \
+#  --resource-proxy-server <principal-external-ip>:9090 \
+#  --resource-proxy-username agent-a \
+#  --resource-proxy-password "$(openssl rand -base64 32)"
+
 ./dist/argocd-agentctl agent create agent-a \
   --principal-context kind-argocd-hub \
   --principal-namespace argocd \
-  --resource-proxy-server <principal-external-ip>:9090 \
+  --resource-proxy-server $(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub):9090 \
   --resource-proxy-username agent-a \
   --resource-proxy-password "$(openssl rand -base64 32)"
 ```
@@ -346,15 +352,22 @@ kubectl apply -n argocd \
 
 ### Agent 연결 구성
 mTLS 인증을 사용하여 Principal에 연결하도록 Agent를 구성합니다. <br />
-`<principal-external-ip>`에 실제 값을 입력해주세요.
 
 ```bash
 NODEPORT=$(kubectl get svc argocd-agent-principal -n argocd --context kind-argocd-hub -o jsonpath='{.spec.ports[0].nodePort}')
 echo "Principal NodePort: $NODEPORT"
 
+#kubectl patch configmap argocd-agent-params -n argocd --context kind-argocd-agent1 \
+#  --patch "{\"data\":{
+#    \"agent.server.address\":\"<principal-external-ip>",
+#    \"agent.server.port\":\"$NODEPORT\",
+#    \"agent.mode\":\"managed\",
+#    \"agent.creds\":\"mtls:any\"
+#  }}"
+
 kubectl patch configmap argocd-agent-params -n argocd --context kind-argocd-agent1 \
   --patch "{\"data\":{
-    \"agent.server.address\":\"<principal-external-ip>\",
+    \"agent.server.address\":\"$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"InternalIP\")].address}' --context kind-argocd-hub)\",
     \"agent.server.port\":\"$NODEPORT\",
     \"agent.mode\":\"managed\",
     \"agent.creds\":\"mtls:any\"
