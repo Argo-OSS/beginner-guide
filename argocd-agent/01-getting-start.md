@@ -252,6 +252,11 @@ kubectl logs -n argocd deployment/argocd-agent-principal --context kind-argocd-h
 이 문서에서는 시작하기 더 쉬운 **Managed (관리) 모드**를 사용합니다. <br />
 Autonomous (자율) 모드의 경우 아래 문서에서 `agent-managed` 명령어를 `agent-autonomous` 로 변경하세요.
 
+### 클러스터 생성
+```bash
+kind create cluster --name argocd-agent1
+```
+
 ### 네임스페이스 생성
 ```bash
 kubectl create namespace argocd --context kind-argocd-agent1
