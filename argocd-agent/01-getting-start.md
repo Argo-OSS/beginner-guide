@@ -279,7 +279,7 @@ kubectl apply -n argocd \
 
 ## Agent 생성 및 연결
 
-### gent 구성 생성
+### Agent 구성 생성
 Principal에서 Agent 구성을 생성합니다. <br />
 `<principal-external-ip>`에 실제 값을 입력해주세요.
 
