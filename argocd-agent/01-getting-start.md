@@ -180,12 +180,12 @@ gRPC 서버 인증서를 발급합니다. (Agent가 연결할 주소) <br />
 #  --dns localhost,<principal-dns-name> \
 #  --upsert
 
-./dist/argocd-agentctl pki issue principal \  
-  --principal-context kind-argocd-hub \  
-  --principal-namespace argocd \  
-  --ip 127.0.0.1,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub) \  
-  --dns localhost,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="Hostname")].address}' --context kind-argocd-hub) \  
-  --upsert 
+./dist/argocd-agentctl pki issue principal \
+  --principal-context kind-argocd-hub \
+  --principal-namespace argocd \
+  --ip 127.0.0.1,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub) \
+  --dns localhost,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="Hostname")].address}' --context kind-argocd-hub) \
+  --upsert
 ```
 
 Resource proxy 인증서를 발급합니다. (Argo CD가 연결할 주소) <br />
