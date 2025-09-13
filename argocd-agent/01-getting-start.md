@@ -217,6 +217,13 @@ Resource proxy 인증서를 발급합니다. (Argo CD가 연결할 주소) <br /
 
 ## Principal 설치
 
+- **⚠️ 주의!!!** 시작 전 아래 파일의 namespace를 "argocd"로 변경해주세요. 기본 namespace가 default로 되어있어서, role binding에 대한 **`(CrashLoopBackOff)`** 문제가 발생합니다. <br />
+`argocd-agent/install/kubernetes/agent/agent-clusterrolebinding.yaml` <br />
+`argocd-agent/install/kubernetes/agent/agent-rolebinding.yaml` <br />
+`argocd-agent/install/kubernetes/principal/principal-clusterrolebinding.yaml` <br />
+`argocd-agent/install/kubernetes/principal/principal-rolebinding.yaml`
+[#403 참고](https://github.com/argoproj-labs/argocd-agent/issues/403)
+
 ### Principal 컴포넌트 배포
 ```bash
 kubectl apply -n argocd \
