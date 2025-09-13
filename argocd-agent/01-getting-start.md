@@ -148,6 +148,11 @@ kubectl rollout restart deployment argocd-server -n argocd --context kind-argocd
 
 필요한 IP와 DNS 정보를 확인합니다.
 
+- `<principal-external-ip>`: 에이전트가 주체에게 접속할 외부 IP
+- `<principal-dns-name>`: 주 서비스에 대한 DNS 이름
+- `<resource-proxy-ip>`: 리소스 프록시(일반적으로 클러스터 내부)에 대한 IP
+- `<resource-proxy-dns>`: 리소스 프록시의 DNS 이름
+
 ```bash
 # Principal external IP 확인
 kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub
@@ -160,34 +165,46 @@ kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="Hostname")
 # Resource proxy IP 확인 (argocd-server의 CLUSTER-IP)
 kubectl get svc argocd-server -n argocd --context kind-argocd-hub -o jsonpath='{.spec.clusterIP}'
 # 예: 10.96.148.48
+
+# Resource proxy dns-name 확인
+# Kubernetes에서 서비스의 DNS 이름은 다음 형식을 따릅니다: <service-name>.<namespace>.svc.cluster.local
+kubectl get svc argocd-server -n argocd --context kind-argocd-hub -o jsonpath='{.metadata.name}.{.metadata.namespace}.svc.cluster.local'
 ```
 
 gRPC 서버 인증서를 발급합니다. (Agent가 연결할 주소) <br />
 `<principal-external-ip>` 와 `<principal-dns-name>`에 실제 값을 입력해주세요.
 ```bash
-./dist/argocd-agentctl pki issue principal \
-  --principal-context kind-argocd-hub \
-  --principal-namespace argocd \
-  --ip 127.0.0.1,<principal-external-ip> \
-  --dns localhost,<principal-dns-name> \
-  --upsert
+#./dist/argocd-agentctl pki issue principal \
+#  --principal-context kind-argocd-hub \
+#  --principal-namespace argocd \
+#  --ip 127.0.0.1,<principal-external-ip> \
+#  --dns localhost,<principal-dns-name> \
+#  --upsert
+
+./dist/argocd-agentctl pki issue principal \  
+  --principal-context kind-argocd-hub \  
+  --principal-namespace argocd \  
+  --ip 127.0.0.1,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub) \  
+  --dns localhost,$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="Hostname")].address}' --context kind-argocd-hub) \  
+  --upsert 
 ```
 
 Resource proxy 인증서를 발급합니다. (Argo CD가 연결할 주소) <br />
-`<resource-proxy-ip>` 와 `<resource-proxy-dns-name>`에 실제 값을 입력해주세요.
 ```bash
+#./dist/argocd-agentctl pki issue resource-proxy \
+#  --principal-context kind-argocd-hub \
+#  --principal-namespace argocd \
+#  --ip 127.0.0.1,<resource-proxy-ip> \
+#  --dns localhost,<resource-proxy-dns-name> \
+#  --upsert
+
 ./dist/argocd-agentctl pki issue resource-proxy \
   --principal-context kind-argocd-hub \
   --principal-namespace argocd \
-  --ip 127.0.0.1,<resource-proxy-ip> \
-  --dns localhost,<resource-proxy-dns-name> \
+  --ip 127.0.0.1,$(kubectl get svc argocd-server -n argocd --context kind-argocd-hub -o jsonpath='{.spec.clusterIP}') \
+  --dns localhost,$(kubectl get svc argocd-server -n argocd --context kind-argocd-hub -o jsonpath='{.metadata.name}.{.metadata.namespace}.svc.cluster.local') \
   --upsert
 ```
-
-- `<principal-external-ip>`: 에이전트가 주체에게 접속할 외부 IP
-- `<principal-dns-name>`: 주 서비스에 대한 DNS 이름
-- `<resource-proxy-ip>`: 리소스 프록시(일반적으로 클러스터 내부)에 대한 IP
-- `<resource-proxy-dns>`: 리소스 프록시의 DNS 이름
 
 ### JWT 서명 키 생성
 ```bash
