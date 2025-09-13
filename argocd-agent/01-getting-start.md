@@ -172,7 +172,6 @@ kubectl get svc argocd-server -n argocd --context kind-argocd-hub -o jsonpath='{
 ```
 
 gRPC 서버 인증서를 발급합니다. (Agent가 연결할 주소) <br />
-`<principal-external-ip>` 와 `<principal-dns-name>`에 실제 값을 입력해주세요.
 ```bash
 #./dist/argocd-agentctl pki issue principal \
 #  --principal-context kind-argocd-hub \
