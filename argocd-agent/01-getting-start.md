@@ -248,9 +248,18 @@ kubectl get pods -n argocd --context kind-argocd-hub | grep principal
 kubectl logs -n argocd deployment/argocd-agent-principal --context kind-argocd-hub
 
 # 예상 로그:
-# INFO[0001] Starting argocd-agent-principal v0.1.0
-# INFO[0002] gRPC server listening on :8443
-# INFO[0003] Resource proxy started on :9090
+# argocd-agent-principal-785cd96ddc-sm44r            1/1     Running   0          7s
+# {"level":"info","msg":"Setting loglevel to info","time":"2025-09-13T07:25:38Z"}
+# time="2025-09-13T07:25:38Z" level=info msg="Loading gRPC TLS certificate from secret argocd/argocd-agent-principal-tls" - gRPC 통신용 TLS 인증서를 Kubernetes Secret에서 로드
+# ...
+# time="2025-09-13T07:25:38Z" level=info msg="This server will require TLS client certs as part of authentication" module=server - 클라이언트 인증을 위해 TLS 클라이언트 인증서가 필요함을 알림
+# ...
+# time="2025-09-13T07:25:38Z" level=info msg="Starting argocd-agent (server) v0.0.1-alpha (ns=argocd, allowed_namespaces=[])" module=server - argocd-agent 서버 시작 (버전, 네임스페이스, 허용된 네임스페이스 목록 표시)
+# ...
+# time="2025-09-13T07:25:38Z" level=info msg="Now listening on [::]:8443" module=server
+# time="2025-09-13T07:25:38Z" level=info msg="Application informer synced and ready" module=server
+# time="2025-09-13T07:25:38Z" level=info msg="AppProject informer synced and ready" module=server
+# time="2025-09-13T07:25:38Z" level=info msg="Repository informer synced and ready" module=server
 ```
 <br />
 
@@ -340,7 +349,15 @@ Agent 클라이언트 인증서가 올바르게 설치되었는지 확인합니�
 ```bash
 kubectl get secret argocd-agent-client-tls -n argocd --context kind-argocd-agent1
 
+# 예상 결과
+# NAME                      TYPE                DATA   AGE
+# argocd-agent-client-tls   kubernetes.io/tls   2      7s
+
 kubectl get secret argocd-agent-ca -n argocd --context kind-argocd-agent1
+
+# 예상 결과
+# NAME              TYPE     DATA   AGE
+# argocd-agent-ca   Opaque   1      15s
 ```
 
 ### Agent 배포
@@ -365,9 +382,11 @@ echo "Principal NodePort: $NODEPORT"
 #    \"agent.creds\":\"mtls:any\"
 #  }}"
 
+INTERNAL_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' --context kind-argocd-hub)
+echo "Principal InternalIP: $INTERNAL_IP"
 kubectl patch configmap argocd-agent-params -n argocd --context kind-argocd-agent1 \
   --patch "{\"data\":{
-    \"agent.server.address\":\"$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"InternalIP\")].address}' --context kind-argocd-hub)\",
+    \"agent.server.address\":\"$INTERNAL_IP\",
     \"agent.server.port\":\"$NODEPORT\",
     \"agent.mode\":\"managed\",
     \"agent.creds\":\"mtls:any\"
